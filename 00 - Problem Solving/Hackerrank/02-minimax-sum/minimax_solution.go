@@ -17,14 +17,12 @@ import (
 
 func miniMaxSum(arr []int32) {
 	// Write your code here
-
 	var min int64 = int64(arr[0])
 	var max int64 = int64(arr[0])
-	var total int64
+	var total, r64 int64
 
 	for _, r := range arr {
-		r64 := int64(r)
-
+		r64 = int64(r)
 		if r64 < min {
 			min = r64
 		} else if r64 > max {
