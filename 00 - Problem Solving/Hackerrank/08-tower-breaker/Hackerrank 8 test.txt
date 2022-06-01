@@ -1,0 +1,17 @@
+6 6 
+ 
+P1 : 3 6
+P2 : 3 3 
+P1 : 1 3
+P2 : 1 1
+P1 : No Move, P2 Win
+
+
+2 2 
+P1 : 2 1
+P2 : 1 1
+P1 : No Move, P2 Win
+
+4 
+P1 : 1
+P2 : no move , P1 win
