@@ -1,0 +1,2 @@
+Hello my name is Taufiq
+I'm learning CLI, Version Control (GIT), and Golang
