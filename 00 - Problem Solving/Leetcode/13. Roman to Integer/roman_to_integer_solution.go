@@ -1,7 +1,7 @@
 package main
 
 func romanToInt(s string) int {
-	var total, before int
+	var total, before, r int
 
 	romanInt := map[string]int{
 		"I": 1,
@@ -14,7 +14,7 @@ func romanToInt(s string) int {
 	}
 
 	for i := len(s) - 1; i >= 0; i-- {
-		r := romanInt[string(s[i])]
+		r = romanInt[string(s[i])]
 		if r >= before {
 			total += r
 		} else {
