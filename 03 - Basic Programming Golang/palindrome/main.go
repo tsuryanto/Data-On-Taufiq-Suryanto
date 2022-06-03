@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 func palindrome(input string) bool {
@@ -13,8 +15,10 @@ func palindrome(input string) bool {
 }
 
 func main() {
-	var kata string
-	fmt.Scanln(&kata)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	kata := scanner.Text()
 
 	if palindrome(kata) {
 		fmt.Println("Palindrome")
