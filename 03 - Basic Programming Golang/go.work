@@ -1,0 +1,11 @@
+go 1.18
+
+use (    
+    grade-nilai
+    luas-tabung
+    faktor-bilangan
+    bilangan-prima
+    palindrome
+    exponentiation
+    tabel-perkalian
+)
