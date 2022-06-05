@@ -8,4 +8,4 @@ Leetcode Link : https://leetcode.com/problems/longest-substring-without-repeatin
 Leetcode Profile : https://leetcode.com/tsuryanto/
 
 # SCREENSHOOT
-<img style="width:100%;" alt="longest substr WRC" src="" />
+<img style="width:100%;" alt="longest substr WRC" src="https://github.com/tsuryanto/Data-On-Taufiq-Suryanto/blob/0bd827dcd9656a510c7fad3cefc887e50717e130/00%20-%20Problem%20Solving/Leetcode/03.%20Longest%20Substring%20Without%20Repeating%20Characters/ss_solved_longest_substr_WRC.jpg" />
