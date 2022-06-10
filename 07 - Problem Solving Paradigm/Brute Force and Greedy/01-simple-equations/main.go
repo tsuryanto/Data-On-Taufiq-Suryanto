@@ -14,6 +14,24 @@ import (
 	else (kalau desimal) return 0, berarti no solution
 */
 
+func kuadrat(n int) int {
+	return int(math.Pow(float64(n), 2))
+}
+
+func isTestPassed(a, b, c, x, y, z int) bool {
+	var passed int
+	if x+y+z == a {
+		passed++
+	}
+	if x*y*z == b {
+		passed++
+	}
+	if kuadrat(x)+kuadrat(y)+kuadrat(z) == c {
+		passed++
+	}
+	return passed == 3
+}
+
 func SimpleEquations(a, b, c int) {
 	if a < 3 {
 		fmt.Println("no solution")
@@ -41,7 +59,8 @@ func SimpleEquations(a, b, c int) {
 				z = res
 			}
 		}
-		if x > 0 {
+
+		if x > 0 && isTestPassed(a, b, c, x, y, z) {
 			fmt.Printf("%d %d %d\n", x, y, z)
 		} else {
 			fmt.Println("no solution")
@@ -52,5 +71,5 @@ func SimpleEquations(a, b, c int) {
 func main() {
 	SimpleEquations(1, 2, 3)  // no solution
 	SimpleEquations(6, 6, 14) // 1 2 3
-	// SimpleEquations(6, 7, 25) // no solution
+	// SimpleEquations(6, 7, 14) // no solution
 }
