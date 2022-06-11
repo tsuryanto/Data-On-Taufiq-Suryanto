@@ -1,0 +1,123 @@
+@startuml UML Digital Outlet scale 
+' Set theme
+' !theme spacelab
+!theme cerulean-outline
+' !theme superhero-outline
+
+entity products{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_category : INTEGER(2) <<FK>>
+    *id_operator : INTEGER(2) <<FK>>
+    *name : VARCHAR(100)
+    *price : INTEGER(10)
+    description : TEXT
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP
+}
+
+entity operators{
+    *id : INTEGER(2) <<PK>>
+    __
+    *name: VARCHAR(50)   
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP
+}
+
+entity categories{
+    *id : INTEGER(2) <<PK>>
+    __
+    *name: VARCHAR(50)   
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity users{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_customer : INTEGER(10) <<FK>>
+    *username : varchar(50) <<UNIQUE>>
+    *email : varchar(100) <<UNIQUE>>    
+    *phone : varchar(20) <<UNIQUE>>
+    *password : VARCHAR(100)       
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP  
+    deletion_reason : TEXT
+}
+
+entity customers{
+    *id : INTEGER(10) <<PK>>
+    __
+    *full_name : VARCHAR(100)
+    address : VARCHAR(150)
+    birth_date : DATE
+    gender : enum('L', 'P')         
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity payment_methods{
+    *id : INTEGER(2) <<PK>>
+    __
+    *name : VARCHAR(50)
+    icon : VARCHAR(100)
+    admin_charge : INTEGER(6)
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity orders{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_user : INTEGER(10) <<FK>>
+    *id_payment_methods : INTEGER(10) <<FK>>    
+    *total : INTEGER(10)
+    *purchase_date : DATETIME
+    *paid_date : DATETIME
+    payment_reference : VARCHAR(100)
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity order_details{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_product : INTEGER(10) <<FK>>
+    *id_order : INTEGER(10) <<FK>>
+    *customer_number : VARCHAR(50)
+    *operator_name : VARCHAR(50)
+    *product_name : VARCHAR(100)    
+    product_description : TEXT
+    *price : INTEGER(10)    
+    success_date : DATETIME
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+operators ||--o{ products : Has
+products }o--|| categories : Has
+users ||--|| customers : Belongs to
+orders }o--|| payment_methods : Will be paid using
+orders }o--|| users : Created by
+orders ||--|{ order_details : Has
+order_details }o--|| products : Fetch
+
+
+@enduml
+'scale 1.5 | scale 200 width | scale 100 height | scale [max] 200x100

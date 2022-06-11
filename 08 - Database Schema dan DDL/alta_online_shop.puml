@@ -1,0 +1,155 @@
+@startuml ERD Alta Online Shop
+' Set theme
+' !theme spacelab
+!theme cerulean-outline
+' !theme superhero-outline
+
+entity products{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_operator : INTEGER(2) <<FK>>
+    *id_product_description : INTEGER(10) <<FK>>
+    *name : VARCHAR(100)
+    *price : INTEGER(10)    
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP
+}
+
+entity products_description {
+    *id : INTEGER(10) <<PK>>
+    __
+    *description : TEXT
+    image : VARCHAR(100)
+}
+
+entity operators{
+    *id : INTEGER(2) <<PK>>
+    __
+    *name: VARCHAR(50)   
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP
+}
+
+entity types{
+    *id : INTEGER(3) <<PK>>
+    __
+    *name: VARCHAR(50)   
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity products_types{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_product : INTEGER(10) <<FK>>
+    *id_type : INTEGER(3) <<FK>>
+}
+
+entity users{
+    *id : INTEGER(10) <<PK>>
+    __
+    *username : varchar(50) <<UNIQUE>>
+    *email : VARCHAR(100) <<UNIQUE>>    
+    *phone : VARCHAR(20) <<UNIQUE>>
+    *password : VARCHAR(100)
+    *full_name : VARCHAR(100)
+    avatar : VARCHAR(100)
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP  
+    deletion_reason : TEXT
+}
+
+entity adresses{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_user : INTEGER(10) <<FK>>
+    *address : VARCHAR(200)  
+    *postal_code : VARCHAR(8)
+    lat : FLOAT
+    lon : FLOAT
+}
+
+entity payment_methods{
+    *id : INTEGER(3) <<PK>>
+    __
+    *name : VARCHAR(50)
+    icon : VARCHAR(100)
+    admin_charge : INTEGER(6)
+    id_payment_method_description: INTEGER(3) <<FK>>
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity payment_method_description {
+    *id : INTEGER(3) <<PK>>
+    __
+    *description : TEXT    
+}
+
+entity user_payment_method_detail {
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_user : INTEGER(10) <<FK>>
+    *id_transaction : INTEGER(10) <<FK>>
+    *id_payment_methods : INTEGER(3) <<FK>>
+    *bills_to_pay : INTEGER(10)
+    paid_date : DATETIME
+    payment_reference : VARCHAR(100)    
+}
+
+entity transactions{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_user : INTEGER(10) <<FK>>        
+    *total : INTEGER(10)
+    *purchase_date : DATETIME
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+entity transaction_details{
+    *id : INTEGER(10) <<PK>>
+    __
+    *id_product : INTEGER(10) <<FK>>
+    *id_transaction : INTEGER(10) <<FK>>
+    *phone_number : VARCHAR(20)
+    *operator_name : VARCHAR(50)
+    *product_name : VARCHAR(100)    
+    product_description : TEXT
+    *price : INTEGER(10)    
+    status : VARCHAR(100)
+    success_date : DATETIME
+    __
+    *created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+    deleted_at : TIMESTAMP    
+}
+
+operators ||--o{ products : Has
+products ||--|{ products_types : Has
+products ||--|| products_description : HAS
+types }|--|| products_types
+users ||--|{ adresses
+user_payment_method_detail }|--|| users : chosen by
+user_payment_method_detail }|--|| payment_methods
+payment_methods ||--|| payment_method_description
+transactions ||--|{ user_payment_method_detail : Will be paid using
+transactions }o--|| users : Created by
+transactions ||--|{ transaction_details : Has
+transaction_details }o--|| products : Has
+
+
+@enduml
+'scale 1.5 | scale 200 width | scale 100 height | scale [max] 200x100
