@@ -1,0 +1,37 @@
+use("alta_olshop")
+
+db.products.find({_id : ObjectId("62a4bc1abab9c389843cef45")})
+
+db.users.find({ gender : "Female" }).count()
+
+db.users.find().sort({name : 1})
+
+db.products.find().limit(5)
+
+db.products.updateOne({_id : ObjectId("62a4bbfabab9c389843cef43")}, { $set : { name : "product dummy", updated_at : new ISODate() }})
+db.products.find({_id : ObjectId("62a4bbfabab9c389843cef43")})
+
+db.transactions.find(
+    {items : {$elemMatch : { id : ObjectId("62a4bbfabab9c389843cef43") }}}
+)
+
+db.transactions.updateMany(
+    {items : {$elemMatch : { id : ObjectId("62a4bbfabab9c389843cef43") }}},
+    {$set : {"items.$.qty" : 3}}
+)
+
+db.products.deleteOne({ _id :  ObjectId("62a4bbfabab9c389843cef43")});
+
+db.products.find({ _id :  ObjectId("62a4bbfabab9c389843cef43")});
+db.products.deleteMany({"product_type._id" : ObjectId("62a4b0b7fac1551fa70346a8")});
+
+db.transactions.updateMany(
+    {items : {$elemMatch : { id : ObjectId("62a4bbfabab9c389843cef43") }}},
+    {
+        $set : {
+            updated_at: new ISODate(),             
+            "items.$.qty" : 3, 
+            "items.$.updated_at" : new ISODate()
+        }
+    }
+)

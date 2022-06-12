@@ -1,0 +1,684 @@
+use('alta_olshop');
+
+db.getCollection("operators")
+
+db.operators.insertMany(
+    [
+        {name : "Telkomsel"}, 
+        {name : "Indosat"},
+        {name : "XL"},
+        {name : "3"},
+        {name : "Axis"}
+    ]
+)
+
+db.getCollection("product_types")
+
+db.product_types.insertMany(
+    [
+        {name : "Pulsa"},
+        {name : "Paket Data"},
+        {name : "Addons"}
+    ]
+)
+
+db.getCollection("products")
+
+db.products.insertMany(
+    [
+        {
+            code : "P0001",
+            name : "Pulsa 50.000",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346a8"), name: "Pulsa" },
+            operator : { _id: ObjectId("62a4b037fac1551fa70346a5"), name : "XL" },            
+            status : 1                        
+        },
+        {
+            code : "P0002",
+            name : "Pulsa 100.000",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346a8"), name: "Pulsa" },
+            operator : { _id: ObjectId("62a4b037fac1551fa70346a5"), name : "XL" },            
+            status : 1
+        }        
+    ]
+)
+
+db.products.insertMany(
+    [
+        {
+            code : "P0003",
+            name : "Paket Max Streaming 35GB",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346a9"), name: "Paket Data" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a3"), name : "Telkomsel" },            
+            status : 1                        
+        },
+        {
+            code : "P0004",
+            name : "Paket Family Unlimited",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346a9"), name: "Paket Data" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a3"), name : "Telkomsel" },            
+            status : 1
+        },       
+        {
+            code : "P0005",
+            name : "Paket Max Streaming 150GB",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346a9"), name: "Paket Data" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a3"), name : "Telkomsel" },            
+            status : 1
+        }      
+    ]
+)
+
+
+db.products.insertMany(
+    [
+        {
+            code : "P0006",
+            name : "Paket Whatsapp 3GB 7 hari",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346aa"), name: "Addons" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a6"), name : "3" },
+            status : 1                        
+        },
+        {
+            code : "P0007",
+            name : "Paket Instagram 5GB 30hari",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346aa"), name: "Addons" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a6"), name : "3" },
+            status : 1
+        },       
+        {
+            code : "P0008",
+            name : "Paket WFH 30hari",
+            product_type : { _id: ObjectId("62a4b0b7fac1551fa70346aa"), name: "Addons" },
+            operator : { _id:  ObjectId("62a4b037fac1551fa70346a6"), name : "3" },        
+            status : 1
+        }      
+    ]
+)
+
+db.products.updateOne({code : "P0001"}, { $set : {description : "Pulsa 50.000. Penambahan masa aktif 60 hari." }})
+db.products.updateOne({code : "P0002"}, { $set : {description : "Pulsa 100.000. Penambahan masa aktif 60 hari." }})
+db.products.updateOne({code : "P0003"}, { $set : {description : "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari." }})
+db.products.updateOne({code : "P0004"}, { $set : {description : "Internet Unlimited. Bonus Disney+ Hotstar 30 hari. Masa Aktif paket 30 hari." }})
+db.products.updateOne({code : "P0005"}, { $set : {description : "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari." }})
+db.products.updateOne({code : "P0006"}, { $set : {description : "Kuota Whatsapp 3GB, masa aktif 7 hari"} })
+db.products.updateOne({code : "P0007"}, { $set : {description : "Kuota Instagram 5GB, masa aktif 30 hari" }})
+db.products.updateOne({code : "P0008"}, { $set : {description : "Unlimited akses Online Conference App dan Aplikasi Edukasi selama 30 hari." }})
+
+db.getCollection("payment_methods")
+
+db.payment_methods.insertMany([
+    {name: "BSI", status:"1"},
+    {name: "Gopay", status:"1"},
+    {name: "OVO", status:"1"}
+])
+
+db.getCollection("users")
+
+db.users.insertMany([
+    {name: "Luffy", status: 1, dob: new Date("1998-08-01"), gender : "Male"},
+    {name: "Zorro", status: 1, dob: new Date("1998-04-28"), gender : "Male"},
+    {name: "Nami", status: 1, dob: new Date("1999-02-15"), gender : "Female"},
+    {name: "Sanji", status: 1, dob: new Date("1998-12-21"), gender : "Male"},
+    {name: "Robin", status: 1, dob: new Date("1993-12-13"), gender : "Female"}
+])
+
+db.getCollection("transactions")
+
+db.transactions.insertMany([
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4e"), name : "Luffy" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4b"), name : "BSI" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4e"), name : "Luffy" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4b"), name : "BSI" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4e"), name : "Luffy" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4b"), name : "BSI" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4f"), name : "Zorro" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4f"), name : "Zorro" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },    
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef4f"), name : "Zorro" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 200000,
+        items : [
+            {
+                id : ObjectId("62a4b0b7fac1551fa70346a8"),
+                name: "Pulsa 50.000",
+                operator: "XL",
+                product_type : "Pulsa",
+                description: "Pulsa 50.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 50000
+            },
+            {
+                id : ObjectId("62a4bbfabab9c389843cef44"),
+                name: "Pulsa 100.000",
+                operator: "XL",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price : 100000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price : 50000                
+            }         
+        ]
+    },    
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef50"), name : "Nami" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },    
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef50"), name : "Nami" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    }, 
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef50"), name : "Nami" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4c"), name : "Gopay" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    }, 
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef51"), name : "Sanji" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },  
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef51"), name : "Sanji" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },   
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef51"), name : "Sanji" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 500000,
+        items : [
+            {
+                id : ObjectId("62a4bc1abab9c389843cef47"),
+                name: "Paket Max Streaming 150GB",
+                operator: "Telkomsel",
+                product_type : "Paket Data",
+                description: "Kuota 150GB. Bonus kuota streaming 5GB/hari. Masa Aktif 90 hari.",
+                qty : 1,
+                price: 200000
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef46"),
+                name: "Paket Family Unlimited",
+                operator: "Telkomsel",              
+                product_type : "Pulsa",
+                description: "Pulsa 100.000. Penambahan masa aktif 60 hari.",
+                qty : 1,
+                price: 250000                
+            },
+            {
+                id : ObjectId("62a4bc1abab9c389843cef45"),
+                name: "Paket Max Streaming 35GB",
+                operator: "Telkomsel",       
+                product_type : "Paket Data",
+                description: "Kuota 35GB. Bonus kuota streaming 2GB/hari. Masa Aktif 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },   
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef52"), name : "Robin" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 100000,
+        items : [
+            {
+                id : ObjectId("62a4bc39bab9c389843cef48"),
+                name: "Paket Whatsapp 3GB 7 hari",
+                operator: "3",
+                product_type : "Addons",
+                description:"Kuota Whatsapp 3GB, masa aktif 7 hari",
+                qty : 1,
+                price: 15000
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef49"),
+                name: "Paket Instagram 5GB 30hari",
+                operator: "3",              
+                product_type : "Addons",
+                description: "Kuota Instagram 5GB, masa aktif 30 hari",
+                qty : 1,
+                price: 35000                
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef4a"),
+                name:"Paket WFH 30hari",
+                operator: "3",       
+                product_type : "Addons",
+                description: "Unlimited akses Online Conference App dan Aplikasi Edukasi selama 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef52"), name : "Robin" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 100000,
+        items : [
+            {
+                id : ObjectId("62a4bc39bab9c389843cef48"),
+                name: "Paket Whatsapp 3GB 7 hari",
+                operator: "3",
+                product_type : "Addons",
+                description:"Kuota Whatsapp 3GB, masa aktif 7 hari",
+                qty : 1,
+                price: 15000
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef49"),
+                name: "Paket Instagram 5GB 30hari",
+                operator: "3",              
+                product_type : "Addons",
+                description: "Kuota Instagram 5GB, masa aktif 30 hari",
+                qty : 1,
+                price: 35000                
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef4a"),
+                name:"Paket WFH 30hari",
+                operator: "3",       
+                product_type : "Addons",
+                description: "Unlimited akses Online Conference App dan Aplikasi Edukasi selama 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    }, 
+    {
+        date : new ISODate(),
+        status : "wf_payment",        
+        user : { id : ObjectId("62a4bcfabab9c389843cef52"), name : "Robin" },
+        payment_method : { id : ObjectId("62a4bce5bab9c389843cef4d"), name : "OVO" },
+        total_qty: 3,
+        total_price: 100000,
+        items : [
+            {
+                id : ObjectId("62a4bc39bab9c389843cef48"),
+                name: "Paket Whatsapp 3GB 7 hari",
+                operator: "3",
+                product_type : "Addons",
+                description:"Kuota Whatsapp 3GB, masa aktif 7 hari",
+                qty : 1,
+                price: 15000
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef49"),
+                name: "Paket Instagram 5GB 30hari",
+                operator: "3",              
+                product_type : "Addons",
+                description: "Kuota Instagram 5GB, masa aktif 30 hari",
+                qty : 1,
+                price: 35000                
+            },
+            {
+                id : ObjectId("62a4bc39bab9c389843cef4a"),
+                name:"Paket WFH 30hari",
+                operator: "3",       
+                product_type : "Addons",
+                description: "Unlimited akses Online Conference App dan Aplikasi Edukasi selama 30 hari.",
+                qty : 1,
+                price: 50000                 
+            }         
+        ]
+    },                                                     
+])
