@@ -1,0 +1,211 @@
+use("alta_olshop")
+db.books.find({
+    $or : [
+        {authorID : 1 },
+        {authorID : 2 } 
+    ]
+})
+
+db.books.find({authorID : 1}, {title : 1, price : 1})
+
+db.books.aggregate({authorID : 2}, {
+    $sum : "$price"
+})
+
+db.books.aggregate(
+    { $match: { authorID : 2 } }, 
+    { $group: { _id : "$authorID", sum : { $sum: "$price" } } }
+);
+
+db.authors.aggregate([
+    { $lookup:
+        {
+           from: "books",
+           localField: "_id",
+           foreignField: "authorID",
+           as: "books"
+        }
+    }
+])
+
+db.books.aggregate([
+    { $lookup:
+        {
+           from: "authors",
+           localField: "authorID",
+           foreignField: "_id",
+           as: "authors"
+        }
+    }
+])
+
+use("alta_olshop")
+db.books.aggregate([
+    { $lookup:
+        {
+           from: "authors",
+           localField: "authorID",
+           foreignField: "_id",
+           as: "authors"
+        }
+    },
+    { $unwind : "$authors" },
+    { $lookup:
+        {
+           from: "publishers",
+           localField: "publisherID",
+           foreignField: "_id",
+           as: "publishers"
+        }
+    },
+    { $unwind : "$publishers" },       
+    { 
+        $group: { 
+            _id : "$authorID", 
+            name : { $first : { "$concat": ["$authors.firstName", " ", "$authors.lastName"] } },
+            number_of_books: { $sum : 1 } ,
+            list_of_books : { 
+                $addToSet : {                     
+                    "$concat": [
+                        "$title", " (", "$publishers.publisherName", ")"
+                    ]                     
+                }                 
+            } ,
+        } 
+    }
+])
+
+use("alta_olshop")
+db.books.aggregate([
+    {
+        $project : {
+            _id : 1,
+            title : 1,
+            price : "$price" - (("$price" * 2)/100),
+            price : "$price",
+            // price : { 
+            //     $switch: {
+            //         branches : [
+            //             {
+            //                 case : { $lt : ["$price", 60000] },
+            //                 then : {
+            //                     $subtract : [
+            //                         "$price",
+            //                         { $divide : [
+            //                             {$multiply : ["$price", 1 ]},
+            //                             100
+            //                         ]}
+            //                     ]
+            //                 }
+            //             },
+            //             {
+            //                 case : { $lt : [60000, "$price"], $lt : ["$price", 90000] },
+            //                 then : {
+            //                     $subtract : [
+            //                         "$price",
+            //                         {$divide : [
+            //                             {$multiply : ["$price", 1 ]},
+            //                             100
+            //                         ]}
+            //                     ]
+            //                 }
+            //             },
+            //             {
+            //                 case : { $gt : ["$price", 90000] },
+            //                 then : {
+            //                     $subtract : [
+            //                         "$price",
+            //                         {$divide : [
+            //                             {$multiply : ["$price", 1 ]},
+            //                             100
+            //                         ]}
+            //                     ]
+            //                 }
+            //             }                                                
+            //         ]
+            //     }
+            // }, 
+            promo : {
+                $switch: {
+                    branches : [
+                        {
+                            case : { $lt : ["$price", 60000] },
+                            then : "1%"
+                        },
+                        {
+                            case : { $lt : [60000, "$price"], $lt : ["$price", 90000] },
+                            then : "2%"
+                        },
+                        {
+                            case : { $gt : ["$price", 90000] },
+                            then : "3%"
+                        }                                                
+                    ]
+                }                
+            },
+        }
+    }
+])
+
+use("alta_olshop")
+db.books.aggregate([
+    { $lookup:
+        {
+           from: "authors",
+           localField: "authorID",
+           foreignField: "_id",
+           as: "authors"
+        }
+    },
+    { $unwind : "$authors" },
+    { $lookup:
+        {
+           from: "publishers",
+           localField: "publisherID",
+           foreignField: "_id",
+           as: "publishers"
+        }
+    },
+    { $unwind : "$publishers" },
+    { $sort : { price : -1 } },
+    {
+        $project : {            
+            title : 1,
+            price : "$price",
+            author : { "$concat": ["$authors.firstName", " ", "$authors.lastName"] },
+            publisher : "$publishers.publisherName"
+        }
+    },        
+])
+
+use("alta_olshop")
+db.books.aggregate([
+    { $lookup:
+        {
+           from: "authors",
+           localField: "authorID",
+           foreignField: "_id",
+           as: "authors"
+        }
+    },
+    { $unwind : "$authors" },
+    { $lookup:
+        {
+           from: "publishers",
+           localField: "publisherID",
+           foreignField: "_id",
+           as: "publishers"
+        }
+    },
+    { $unwind : "$publishers" },
+    { $limit : 4 },
+    { $skip : 2 },
+    {
+        $project : {
+            _id : 1,
+            title : 1,
+            price : "$price",
+            publisher : "$publishers.publisherName"
+        }
+    }    
+])
