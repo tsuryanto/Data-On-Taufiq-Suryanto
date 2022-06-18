@@ -121,7 +121,7 @@ func DeleteUserController(c echo.Context) error {
 	}
 }
 
-// delete user by id
+// update user by id
 func UpdateUserController(c echo.Context) error {
 	var user = User{}
 	c.Bind(&user)
@@ -134,8 +134,8 @@ func UpdateUserController(c echo.Context) error {
 
 		if err := DB.First(&user, id).Error; err != nil {
 			return c.JSON(http.StatusOK, map[string]interface{}{
-				"message": "success update user information",
-				"user":    "sorry, can't show this value",
+				"message": "failed update user information",
+				"user":    nil,
 			})
 		} else {
 			return c.JSON(http.StatusOK, map[string]interface{}{
