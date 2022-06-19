@@ -2,8 +2,15 @@ package dto
 
 import "time"
 
+/* REQUEST */
+type UserRequestBody struct {
+	Name     string `validate:"required" json:"name"`
+	Email    string `validate:"required" json:"email"`
+	Password string `validate:"required" json:"password"`
+}
+
+/* RESPONSE */
 type UserResponse struct {
-	IsEmpty   bool      `json:"-"`
 	ID        uint      `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
