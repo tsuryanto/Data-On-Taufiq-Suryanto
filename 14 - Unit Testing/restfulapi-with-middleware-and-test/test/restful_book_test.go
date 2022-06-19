@@ -137,7 +137,6 @@ func TestUpdateBookSuccess(t *testing.T) {
 	if err == nil {
 		requestBody := strings.NewReader(`{
 			"name" : "update",
-			"publisher": "",
 			"author": "Budiman"
 		}`)
 		request := httptest.NewRequest(http.MethodPut, urlBook+"/"+strconv.Itoa(int(book.ID)), requestBody)
@@ -176,8 +175,7 @@ func TestUpdateBookFailed(t *testing.T) {
 	if err == nil {
 		requestBody := strings.NewReader(`{
 			"name" : "update",
-			"publisher": "",
-			"author": "Tere Liye"
+			"author": "Budiman"
 		}`)
 		request := httptest.NewRequest(http.MethodPut, urlBook+"/2", requestBody)
 		addBookRequestHeader(request, true)

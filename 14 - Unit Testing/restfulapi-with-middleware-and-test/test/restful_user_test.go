@@ -136,9 +136,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 
 	if err == nil {
 		requestBody := strings.NewReader(`{
-			"name" : "update",
-			"email": "",
-			"password": "example"
+			"name" : "update"			
 		}`)
 		request := httptest.NewRequest(http.MethodPut, urlUser+"/"+strconv.Itoa(int(user.ID)), requestBody)
 		addUserRequestHeader(request, true)
@@ -175,8 +173,7 @@ func TestUpdateUserFailed(t *testing.T) {
 	if err == nil {
 		requestBody := strings.NewReader(`{
 			"name" : "update",
-			"email": "",
-			"password": "example"
+			"email": "update@example.com"			
 		}`)
 		request := httptest.NewRequest(http.MethodPut, urlUser+"/2", requestBody)
 		addUserRequestHeader(request, true)

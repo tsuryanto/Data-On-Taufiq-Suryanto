@@ -26,7 +26,9 @@ func (repository *BookRepositoryImplSql) Save(ctx context.Context, book Book) (B
 
 func (repository *BookRepositoryImplSql) Update(ctx context.Context, book Book, bookId uint) (Book, error) {
 	err := repository.DB.WithContext(ctx).Model(&book).Where("id = ?", bookId).Updates(&book).Error
-	return book, err
+	updatedBook := Book{}
+	repository.DB.WithContext(ctx).First(&updatedBook, bookId)
+	return updatedBook, err
 }
 
 func (repository *BookRepositoryImplSql) Delete(ctx context.Context, bookId uint) error {

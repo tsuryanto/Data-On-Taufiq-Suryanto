@@ -35,10 +35,10 @@ func (controller *UserController) Create(c echo.Context) error {
 }
 
 func (controller *UserController) Update(c echo.Context) error {
-	userRequestBody := dto.UserRequestBody{}
+	userRequestBody := dto.UpdateUserRequestBody{}
 	err := helper.ReadFromRequestBody(c.Request(), &userRequestBody)
 	var id, errId = strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil && errId != nil {
+	if err != nil || errId != nil {
 		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 

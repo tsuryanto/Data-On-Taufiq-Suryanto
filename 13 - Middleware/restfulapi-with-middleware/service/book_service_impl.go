@@ -27,11 +27,11 @@ func (service *BookServiceImpl) Create(ctx context.Context, request dto.BookRequ
 	}
 }
 
-func (service *BookServiceImpl) Update(ctx context.Context, request dto.BookRequestBody, bookId uint) (interface{}, error) {
+func (service *BookServiceImpl) Update(ctx context.Context, request dto.UpdateBookRequestBody, bookId uint) (interface{}, error) {
 	count, err := service.BookRepository.CountById(ctx, bookId)
 	if err == nil {
 		if count == 1 {
-			book, err := service.BookRepository.Update(ctx, ToBookDomain(request), bookId)
+			book, err := service.BookRepository.Update(ctx, UpdateToBookDomain(request), bookId)
 			if err == nil {
 				book.ID = bookId
 				return toBookResponse(book), nil
@@ -108,6 +108,23 @@ func ToBookDomain(req dto.BookRequestBody) domain.Book {
 		Name:      req.Name,
 		Publisher: req.Publisher,
 		Author:    req.Author,
+	}
+	return book
+}
+
+func UpdateToBookDomain(req dto.UpdateBookRequestBody) domain.Book {
+	book := domain.Book{}
+
+	if req.Name != nil {
+		book.Name = *req.Name
+	}
+
+	if req.Publisher != nil {
+		book.Publisher = *req.Publisher
+	}
+
+	if req.Author != nil {
+		book.Author = *req.Author
 	}
 	return book
 }

@@ -9,6 +9,12 @@ type BookRequestBody struct {
 	Author    string `validate:"required" json:"author"`
 }
 
+type UpdateBookRequestBody struct {
+	Name      *string `json:"name"`
+	Publisher *string `json:"publisher"`
+	Author    *string `json:"author"`
+}
+
 /* RESPONSE */
 type BookResponse struct {
 	ID        uint      `json:"id"`

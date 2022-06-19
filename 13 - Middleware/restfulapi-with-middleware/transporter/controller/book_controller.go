@@ -35,10 +35,10 @@ func (controller *BookController) Create(c echo.Context) error {
 }
 
 func (controller *BookController) Update(c echo.Context) error {
-	bookRequestBody := dto.BookRequestBody{}
+	bookRequestBody := dto.UpdateBookRequestBody{}
 	err := helper.ReadFromRequestBody(c.Request(), &bookRequestBody)
 	var id, errId = strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil && errId != nil {
+	if err != nil || errId != nil {
 		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 
