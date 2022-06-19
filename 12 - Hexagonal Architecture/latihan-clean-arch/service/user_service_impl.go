@@ -27,11 +27,11 @@ func (service *UserServiceImpl) Create(ctx context.Context, request dto.UserRequ
 	}
 }
 
-func (service *UserServiceImpl) Update(ctx context.Context, request dto.UserRequestBody, userId uint) (interface{}, error) {
+func (service *UserServiceImpl) Update(ctx context.Context, request dto.UpdateUserRequestBody, userId uint) (interface{}, error) {
 	count, err := service.UserRepository.CountById(ctx, userId)
 	if err == nil {
 		if count == 1 {
-			user, err := service.UserRepository.Update(ctx, ToUserDomain(request), userId)
+			user, err := service.UserRepository.Update(ctx, UpdateToUserDomain(request), userId)
 			if err == nil {
 				user.ID = userId
 				return toUserResponse(user), nil
@@ -107,12 +107,23 @@ func ToUserDomain(req dto.UserRequestBody) domain.User {
 		Email:    req.Email,
 		Password: req.Password,
 	}
-	// now := time.Now()
-	// if tag == "create" {
-	// 	user.CreatedAt = now
-	// 	user.CreatedAt = now
-	// } else if tag == "update" {
-	// 	user.CreatedAt = now
-	// }
+	return user
+}
+
+func UpdateToUserDomain(req dto.UpdateUserRequestBody) domain.User {
+	user := domain.User{}
+
+	if req.Name != nil {
+		user.Name = *req.Name
+	}
+
+	if req.Email != nil {
+		user.Email = *req.Email
+	}
+
+	if req.Password != nil {
+		user.Password = *req.Password
+	}
+
 	return user
 }

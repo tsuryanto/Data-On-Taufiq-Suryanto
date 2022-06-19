@@ -26,7 +26,9 @@ func (repository *UserRepositoryImplSql) Save(ctx context.Context, user domain.U
 
 func (repository *UserRepositoryImplSql) Update(ctx context.Context, user domain.User, userId uint) (domain.User, error) {
 	err := repository.DB.WithContext(ctx).Model(&user).Where("id = ?", userId).Updates(&user).Error
-	return user, err
+	updatedUser := User{}
+	repository.DB.WithContext(ctx).First(&updatedUser, userId)
+	return updatedUser, err
 }
 
 func (repository *UserRepositoryImplSql) Delete(ctx context.Context, userId uint) error {
