@@ -2,7 +2,6 @@ package helper
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -15,7 +14,7 @@ func ReadFromRequestBody(request *http.Request, result interface{}) error {
 	} else {
 		validate := validator.New()
 		err := validate.Struct(result)
-		fmt.Println(err)
+		// fmt.Println(err)
 		if err != nil {
 			return err
 		} else {
