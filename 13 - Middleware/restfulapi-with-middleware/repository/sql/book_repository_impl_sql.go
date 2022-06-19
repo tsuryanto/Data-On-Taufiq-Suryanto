@@ -2,10 +2,9 @@ package sql
 
 import (
 	"context"
-	"latian_clean_arch/app/helper"
+	"latian_clean_arch/model/domain"
 	. "latian_clean_arch/model/domain"
 	"latian_clean_arch/repository"
-	"net/http"
 
 	"gorm.io/gorm"
 )
@@ -35,22 +34,20 @@ func (repository *BookRepositoryImplSql) Delete(ctx context.Context, bookId uint
 	return err
 }
 
-func (repository *BookRepositoryImplSql) FindById(ctx context.Context, bookId uint) (int, Book, error) {
+func (repository *BookRepositoryImplSql) FindById(ctx context.Context, bookId uint) (domain.Book, error) {
 	var book = Book{}
 	err := repository.DB.WithContext(ctx).First(&book, bookId).Error
-	code := helper.GetQueryErrorResponseCode(err)
-
-	if code == http.StatusOK {
-		return code, book, nil
+	if err == nil {
+		return book, nil
 	} else {
-		return code, Book{}, err
+		return Book{}, err
 	}
 }
 
-func (repository *BookRepositoryImplSql) FindAll(ctx context.Context) ([]Book, error) {
+func (repository *BookRepositoryImplSql) FindAll(ctx context.Context) ([]domain.Book, error) {
 	var books = []Book{}
-	query := repository.DB.WithContext(ctx).Find(&books)
-	if err := query.Error; err != nil {
+	err := repository.DB.WithContext(ctx).Find(&books).Error
+	if err != nil {
 		return nil, err
 	}
 	return books, nil
@@ -58,8 +55,8 @@ func (repository *BookRepositoryImplSql) FindAll(ctx context.Context) ([]Book, e
 
 func (repository *BookRepositoryImplSql) CountById(ctx context.Context, bookId uint) (int, error) {
 	var count int64
-	query := repository.DB.WithContext(ctx).Model(&Book{}).Where("id = ?", bookId).Count(&count)
-	if err := query.Error; err != nil {
+	err := repository.DB.WithContext(ctx).Model(&Book{}).Where("id = ?", bookId).Count(&count).Error
+	if err != nil {
 		return -1, err
 	}
 	return int(count), nil
