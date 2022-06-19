@@ -2,11 +2,9 @@ package sql
 
 import (
 	"context"
-	"latian_clean_arch/app/helper"
 	"latian_clean_arch/model/domain"
 	. "latian_clean_arch/model/domain"
 	"latian_clean_arch/repository"
-	"net/http"
 
 	"gorm.io/gorm"
 )
@@ -36,34 +34,30 @@ func (repository *UserRepositoryImplSql) Delete(ctx context.Context, userId uint
 	return err
 }
 
-func (repository *UserRepositoryImplSql) FindById(ctx context.Context, userId uint) (int, domain.User, error) {
+func (repository *UserRepositoryImplSql) FindById(ctx context.Context, userId uint) (domain.User, error) {
 	var user = User{}
 	err := repository.DB.WithContext(ctx).First(&user, userId).Error
-	code := helper.GetQueryErrorResponseCode(err)
-
-	if code == http.StatusOK {
-		return code, user, nil
+	if err == nil {
+		return user, nil
 	} else {
-		return code, User{}, err
+		return User{}, err
 	}
 }
 
-func (repository *UserRepositoryImplSql) FindByIdentifier(ctx context.Context, identifier string) (int, domain.User, error) {
+func (repository *UserRepositoryImplSql) FindByIdentifier(ctx context.Context, identifier string) (domain.User, error) {
 	var user = User{}
 	err := repository.DB.WithContext(ctx).Where("email = ?", identifier).First(&user).Error
-	code := helper.GetQueryErrorResponseCode(err)
-
-	if code == http.StatusOK {
-		return code, user, nil
+	if err == nil {
+		return user, nil
 	} else {
-		return code, User{}, err
+		return User{}, err
 	}
 }
 
 func (repository *UserRepositoryImplSql) FindAll(ctx context.Context) ([]domain.User, error) {
 	var users = []User{}
-	query := repository.DB.WithContext(ctx).Find(&users)
-	if err := query.Error; err != nil {
+	err := repository.DB.WithContext(ctx).Find(&users).Error
+	if err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -71,8 +65,8 @@ func (repository *UserRepositoryImplSql) FindAll(ctx context.Context) ([]domain.
 
 func (repository *UserRepositoryImplSql) CountById(ctx context.Context, userId uint) (int, error) {
 	var count int64
-	query := repository.DB.WithContext(ctx).Model(&User{}).Where("id = ?", userId).Count(&count)
-	if err := query.Error; err != nil {
+	err := repository.DB.WithContext(ctx).Model(&User{}).Where("id = ?", userId).Count(&count).Error
+	if err != nil {
 		return -1, err
 	}
 	return int(count), nil
@@ -80,9 +74,8 @@ func (repository *UserRepositoryImplSql) CountById(ctx context.Context, userId u
 
 func (repository *UserRepositoryImplSql) MatchingEmailAndPassword(ctx context.Context, email string, password string) (bool, error) {
 	var count int64
-	query := repository.DB.WithContext(ctx).Model(&User{}).Where("email = ? AND password = ?", email, password).Count(&count)
-
-	if err := query.Error; err != nil {
+	err := repository.DB.WithContext(ctx).Model(&User{}).Where("email = ? AND password = ?", email, password).Count(&count).Error
+	if err != nil {
 		return false, err
 	}
 

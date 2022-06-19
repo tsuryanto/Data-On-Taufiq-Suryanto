@@ -1,8 +1,11 @@
 package helper
 
 import (
+	. "latian_clean_arch/app/constant"
 	"latian_clean_arch/model/basic"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // type HTTPResponseFormat interface {
@@ -13,63 +16,60 @@ import (
 
 // }
 
-func GetResponseFormat(code int, data interface{}) basic.ResponseFormat {
-	var responseFormat = basic.ResponseFormat{
-		Code: code,
-		Data: data,
+func ResponseChoiser(c echo.Context, err error) error {
+	if err == ErrNotFound {
+		return GetNewResponseFormat(c, http.StatusNotFound, nil, "")
 	}
 
-	switch code {
-	case http.StatusOK:
-		responseFormat.Status = "success"
-		responseFormat.Message = "success"
-
-	case http.StatusBadRequest:
-		responseFormat.Status = "failed"
-		responseFormat.Message = "bad request"
-
-	case http.StatusNotFound:
-		responseFormat.Status = "not found"
-		responseFormat.Message = "record not found"
-
-	case http.StatusUnauthorized:
-		responseFormat.Status = "failed"
-		responseFormat.Message = "Unauthorized"
-
-	default:
-		responseFormat.Status = "failed"
-		responseFormat.Message = "internal server error"
+	if err == ErrBadRequest {
+		return GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 
-	return responseFormat
+	if err == ErrUnauthorized {
+		return GetNewResponseFormat(c, http.StatusUnauthorized, nil, "")
+	}
+
+	return GetNewResponseFormat(c, http.StatusInternalServerError, nil, "")
 }
 
-func GetResponseFormatForDelete(code int) basic.ResponseFormat {
+func GetNewResponseFormat(c echo.Context, code int, data interface{}, message string) error {
 	var responseFormat = basic.ResponseFormat{
-		Code: code,
+		Code:    code,
+		Message: message,
+		Data:    data,
 	}
 
 	switch code {
 	case http.StatusOK:
 		responseFormat.Status = "success"
-		responseFormat.Message = "success, data deleted"
+		if message == "" {
+			responseFormat.Message = "success"
+		}
 
 	case http.StatusBadRequest:
 		responseFormat.Status = "failed"
-		responseFormat.Message = "bad request"
+		if message == "" {
+			responseFormat.Message = "bad request"
+		}
 
 	case http.StatusNotFound:
 		responseFormat.Status = "not found"
-		responseFormat.Message = "record not found"
+		if message == "" {
+			responseFormat.Message = "record not found"
+		}
 
 	case http.StatusUnauthorized:
 		responseFormat.Status = "failed"
-		responseFormat.Message = "Unauthorized"
+		if message == "" {
+			responseFormat.Message = "unauthorized"
+		}
 
 	default:
 		responseFormat.Status = "failed"
-		responseFormat.Message = "internal server error"
+		if message == "" {
+			responseFormat.Message = "internal server error"
+		}
 	}
 
-	return responseFormat
+	return c.JSON(code, responseFormat)
 }

@@ -24,12 +24,14 @@ func (controller *BookController) Create(c echo.Context) error {
 	bookRequestBody := dto.BookRequestBody{}
 	err := helper.ReadFromRequestBody(c.Request(), &bookRequestBody)
 	if err != nil {
-		var code = http.StatusBadRequest
-		return c.JSON(code, helper.GetResponseFormat(code, nil))
+		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 
-	code, book, _ := controller.BookService.Create(c.Request().Context(), bookRequestBody)
-	return c.JSON(code, helper.GetResponseFormat(code, book))
+	book, err := controller.BookService.Create(c.Request().Context(), bookRequestBody)
+	if err != nil {
+		return helper.GetNewResponseFormat(c, http.StatusInternalServerError, nil, "")
+	}
+	return helper.GetNewResponseFormat(c, http.StatusOK, book, "success, data created")
 }
 
 func (controller *BookController) Update(c echo.Context) error {
@@ -37,36 +39,45 @@ func (controller *BookController) Update(c echo.Context) error {
 	err := helper.ReadFromRequestBody(c.Request(), &bookRequestBody)
 	var id, errId = strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil && errId != nil {
-		var code = http.StatusBadRequest
-		return c.JSON(code, helper.GetResponseFormat(code, nil))
+		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 
-	code, book, _ := controller.BookService.Update(c.Request().Context(), bookRequestBody, uint(id))
-	return c.JSON(code, helper.GetResponseFormat(code, book))
+	book, err := controller.BookService.Update(c.Request().Context(), bookRequestBody, uint(id))
+	if err != nil {
+		return helper.ResponseChoiser(c, err)
+	}
+	return helper.GetNewResponseFormat(c, http.StatusOK, book, "success, data updated")
 }
 
 func (controller *BookController) Delete(c echo.Context) error {
 	var id, errId = strconv.ParseUint(c.Param("id"), 10, 32)
 	if errId != nil {
-		var code = http.StatusBadRequest
-		return c.JSON(code, helper.GetResponseFormatForDelete(code))
+		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
 
-	code, _ := controller.BookService.Delete(c.Request().Context(), uint(id))
-	return c.JSON(code, helper.GetResponseFormatForDelete(code))
+	err := controller.BookService.Delete(c.Request().Context(), uint(id))
+	if err != nil {
+		return helper.ResponseChoiser(c, err)
+	}
+	return helper.GetNewResponseFormat(c, http.StatusOK, nil, "success, data deleted")
 }
 
 func (controller *BookController) FindById(c echo.Context) error {
 	var id, err = strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		var code = http.StatusBadRequest
-		return c.JSON(code, helper.GetResponseFormat(code, nil))
+		return helper.GetNewResponseFormat(c, http.StatusBadRequest, nil, "")
 	}
-	code, book, _ := controller.BookService.FindById(c.Request().Context(), uint(id))
-	return c.JSON(code, helper.GetResponseFormat(code, book))
+	book, err := controller.BookService.FindById(c.Request().Context(), uint(id))
+	if err != nil {
+		return helper.ResponseChoiser(c, err)
+	}
+	return helper.GetNewResponseFormat(c, http.StatusOK, book, "")
 }
 
 func (controller *BookController) FindAll(c echo.Context) error {
-	code, books, _ := controller.BookService.FindAll(c.Request().Context())
-	return c.JSON(code, helper.GetResponseFormat(code, books))
+	books, err := controller.BookService.FindAll(c.Request().Context())
+	if err != nil {
+		return helper.ResponseChoiser(c, err)
+	}
+	return helper.GetNewResponseFormat(c, http.StatusOK, books, "")
 }

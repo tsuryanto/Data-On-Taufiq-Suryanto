@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
+	. "latian_clean_arch/app/constant"
 	"latian_clean_arch/model/domain"
 	"latian_clean_arch/model/dto"
 	repository "latian_clean_arch/repository"
-	"net/http"
 )
 
 type UserServiceImpl struct {
@@ -18,99 +18,95 @@ func NewUserServiceImpl(repository repository.UserRepository) UserService {
 	}
 }
 
-func (service *UserServiceImpl) Create(ctx context.Context, request dto.UserRequestBody) (int, interface{}, error) {
+func (service *UserServiceImpl) Create(ctx context.Context, request dto.UserRequestBody) (interface{}, error) {
 	user, err := service.UserRepository.Save(ctx, ToUserDomain(request))
-	var statusCode int
-	if err == nil {
-		statusCode = http.StatusOK
+	if err != nil {
+		return nil, err
 	} else {
-		statusCode = http.StatusInternalServerError
+		return toUserResponse(user), nil
 	}
-	return statusCode, toUserResponse(user), err
 }
 
-func (service *UserServiceImpl) Update(ctx context.Context, request dto.UserRequestBody, userId uint) (int, interface{}, error) {
-	var statusCode int
+func (service *UserServiceImpl) Update(ctx context.Context, request dto.UserRequestBody, userId uint) (interface{}, error) {
 	count, err := service.UserRepository.CountById(ctx, userId)
 	if err == nil {
 		if count == 1 {
 			user, err := service.UserRepository.Update(ctx, ToUserDomain(request), userId)
 			if err == nil {
-				statusCode = http.StatusOK
 				user.ID = userId
-				return statusCode, toUserResponse(user), err
+				return toUserResponse(user), nil
 			}
 		} else {
 			if count == 0 {
-				statusCode = http.StatusNotFound
-				return statusCode, nil, err
+				return nil, ErrNotFound
 			}
 		}
 	}
-	statusCode = http.StatusInternalServerError
-	return statusCode, nil, err
+	return nil, ErrServerError
 }
 
-func (service *UserServiceImpl) Delete(ctx context.Context, userId uint) (int, error) {
-	var statusCode int
+func (service *UserServiceImpl) Delete(ctx context.Context, userId uint) error {
 	count, err := service.UserRepository.CountById(ctx, userId)
 	if err == nil {
 		if count == 1 {
 			err := service.UserRepository.Delete(ctx, userId)
 			if err == nil {
-				statusCode = http.StatusOK
-				return statusCode, nil
+				return nil
 			}
 		} else {
 			if count == 0 {
-				statusCode = http.StatusNotFound
-				return statusCode, err
+				return ErrNotFound
 			}
 		}
 	}
-	statusCode = http.StatusInternalServerError
-	return statusCode, err
+	return ErrServerError
 }
 
-func (service *UserServiceImpl) FindById(ctx context.Context, userId uint) (int, interface{}, error) {
-	code, user, err := service.UserRepository.FindById(ctx, userId)
-	if code == http.StatusOK {
-		return code, toUserResponse(user), err
-	} else {
-		return code, nil, err
+func (service *UserServiceImpl) FindById(ctx context.Context, userId uint) (interface{}, error) {
+	count, err := service.UserRepository.CountById(ctx, userId)
+	if err == nil {
+		if count == 1 {
+			user, err := service.UserRepository.FindById(ctx, userId)
+			if err == nil {
+				return toUserResponse(user), nil
+			}
+		} else {
+			if count == 0 {
+				return nil, ErrNotFound
+			}
+		}
 	}
+	return nil, ErrServerError
 }
 
-func (service *UserServiceImpl) FindAll(ctx context.Context) (int, []dto.UserResponse, error) {
+func (service *UserServiceImpl) FindAll(ctx context.Context) ([]dto.UserResponse, error) {
 	users, err := service.UserRepository.FindAll(ctx)
 	var userResponses []dto.UserResponse
-	var statusCode int
 	if err == nil {
 		for _, user := range users {
 			userResponses = append(userResponses, toUserResponse(user))
 		}
-		statusCode = http.StatusOK
+		return userResponses, nil
 	} else {
-		statusCode = http.StatusInternalServerError
+		return userResponses, ErrServerError
 	}
-	return statusCode, userResponses, err
 }
 
-func (service *UserServiceImpl) Auth(ctx context.Context, request dto.UserRequestAuth) (int, interface{}, error) {
+func (service *UserServiceImpl) Auth(ctx context.Context, request dto.UserRequestAuth) (interface{}, error) {
 	isValid, err := service.UserRepository.MatchingEmailAndPassword(ctx, request.Identifier, request.Password)
 	if err != nil {
-		return http.StatusInternalServerError, nil, err
+		return nil, ErrServerError
 	}
 
 	if isValid {
-		code, user, err := service.UserRepository.FindByIdentifier(ctx, request.Identifier)
-		if code == http.StatusOK {
-			return code, toUserResponse(user), err
+		user, err := service.UserRepository.FindByIdentifier(ctx, request.Identifier)
+		if err == nil {
+			return toUserResponse(user), nil
 		} else {
-			return code, nil, err
+			return nil, ErrServerError
 		}
 	} else {
-		return http.StatusUnauthorized, nil, err
+		return nil, ErrUnauthorized
 	}
 }
 
@@ -130,12 +126,5 @@ func ToUserDomain(req dto.UserRequestBody) domain.User {
 		Email:    req.Email,
 		Password: req.Password,
 	}
-	// now := time.Now()
-	// if tag == "create" {
-	// 	user.CreatedAt = now
-	// 	user.CreatedAt = now
-	// } else if tag == "update" {
-	// 	user.CreatedAt = now
-	// }
 	return user
 }
