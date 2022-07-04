@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-go
+  labels:
+    name: crud-go
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: crud-go
+  template:
+    metadata:
+      name: crud-go
+      labels:
+        name: crud-go
+    spec:
+      containers:
+        - name: crud-go
+          image: tsuryanto/go-crud:1.0.0
+          ports:
+            - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: crud-go-service
+spec:
+  type: NodePort
+  selector:
+    name: crud-go
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30001
