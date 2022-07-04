@@ -1,0 +1,43 @@
+# Syntax untuk Github Action
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-including-and-excluding-paths
+
+name: Running CI/CD example
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  unit-test:
+    name: "unit test"
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set Up Golang
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.18
+
+    - name: running test
+      run: |
+         go mod download golang.org/x/net
+         go test ./... -cover -failfast
+
+    - name: login to docker hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME}}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD}}
+
+    - name: build image
+      run: |
+        docker build . -t tsuryanto/go-crud:1.0.0
+
+    - name: docker push
+      run: |
+        docker push tsuryanto/go-crud:1.0.0
